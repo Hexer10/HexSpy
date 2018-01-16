@@ -6,10 +6,10 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#define PLUGIN_NAME           "Command Spy"
+#define PLUGIN_NAME           "HexSpy"
 #define PLUGIN_VERSION        "1.0"
 
-#define sPrefix  "{bluegrey}[CMD SPY]{default}"
+#define sPrefix  "{bluegrey}[Hex SPY]{default}"
 
 
 Handle hSpyCookie;
@@ -25,7 +25,7 @@ public Plugin myinfo =
 {
 	name = PLUGIN_NAME,
 	author = "Hexah",
-	description = "",
+	description = "See other player commands!",
 	version = PLUGIN_VERSION,
 	url = "csitajb.it"
 };
@@ -38,14 +38,14 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 
 public void OnPluginStart()
 {
-	RegAdminCmd("sm_cmdspy", Cmd_CmdSpy, ADMFLAG_GENERIC);
+	RegAdminCmd("sm_hexspy", Cmd_Spy, ADMFLAG_GENERIC);
 	
-	CreateConVar("sm_cmdspy_version", PLUGIN_VERSION, "CmdSpy plugin version", FCVAR_SPONLY|FCVAR_REPLICATED|FCVAR_NOTIFY);
-	cv_bImmunity = CreateConVar("sm_cmdspy_immunity", "1", "If true(1) who has an immunity lower can't see the cmd of one that has it higher", _, true, 0.0, true, 0.0);
+	CreateConVar("sm_hexspy_version", PLUGIN_VERSION, "HexSpy plugin version", FCVAR_SPONLY|FCVAR_REPLICATED|FCVAR_NOTIFY);
+	cv_bImmunity = CreateConVar("sm_hexspy_immunity", "1", "If true(1) who has an immunity lower can't see the cmd of one that has it higher", _, true, 0.0, true, 0.0);
 	
-	hSpyCookie = RegClientCookie("sm_cmdspy_enabled", "If true client has enabled the cmdspy", CookieAccess_Private);
+	hSpyCookie = RegClientCookie("sm_hexspy_enabled", "If true client has enabled the hexspy", CookieAccess_Private); //Reg cookie
 	
-	if (bLate) for(int i = 1; i <= MaxClients; i++)if (IsClientInGame(i)) OnClientCookiesCached(i);
+	if (bLate) for(int i = 1; i <= MaxClients; i++)if (IsClientInGame(i)) OnClientCookiesCached(i); //Late load, clientprefs
 
 }
 
@@ -54,10 +54,9 @@ public void OnClientCookiesCached(int client)
 	char sValue[4];
 	GetClientCookie(client, hSpyCookie, sValue, sizeof(sValue));
 	bSpy[client] = view_as<bool>(StringToInt(sValue));
-	PrintToChatAll("%i", bSpy[client]);
 }
 
-public Action Cmd_CmdSpy(int client, int args)
+public Action Cmd_Spy(int client, int args)
 {
 	if (!AreClientCookiesCached(client))
 	{
@@ -78,7 +77,7 @@ public Action Cmd_CmdSpy(int client, int args)
 void GetFile()
 {
 	char sPath[PLATFORM_MAX_PATH];
-	BuildPath(Path_SM, sPath, sizeof(sPath), "configs/cmdspy.ini");
+	BuildPath(Path_SM, sPath, sizeof(sPath), "configs/hexspy.ini");
 	
 	//Maybe we can skip this using "a+" mode?
 	if (!FileExists(sPath))
@@ -105,13 +104,13 @@ public Action OnClientCommand(int client, int args)
 	
 	bool bAllow;
 	
-	if ((StrContains(sCommand, "sm_") == 0) && (GetCommandFlags(sCommand) != INVALID_FCVAR_FLAGS))
+	if ((StrContains(sCommand, "sm_") == 0) && (GetCommandFlags(sCommand) != INVALID_FCVAR_FLAGS)) //Check if the command actually exixsts
 		bAllow = true;
 
 	GetFile();
 
 	char sLine[64];
-	while (CfgFile.ReadLine(sLine, sizeof(sLine)))
+	while (CfgFile.ReadLine(sLine, sizeof(sLine))) //Parse the cfg file
 	{
 		TrimString(sLine);
 		if (ReplaceStringEx(sLine, sizeof(sLine), "!", "") == 0)
