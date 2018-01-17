@@ -11,13 +11,13 @@ echo "Give compiler rights for compile"
 chmod +x addons/sourcemod/scripting/spcomp
 
 echo "Set plugins version"
-for file in addons/sourcemod/scripting/hexspy.sp
+for file in addons/sourcemod/scripting/HexSpy.sp
 do
   sed -i "s/<TAG>/$TAG/g" $file > output.txt
   rm output.txt
 done
 
-addons/sourcemod/scripting/compile.sh hexspy.sp
+addons/sourcemod/scripting/compile.sh HexSpy.sp
 
 echo "Remove plugins folder if exists"
 if [ -d "addons/sourcemod/plugins" ]; then
@@ -30,13 +30,13 @@ mkdir build/addons/sourcemod/configs
 mkdir build/addons/sourcemod/plugins
 
 echo "Move plugins files to their folder"
-mv addons/sourcemod/scripting/hexspy.sp build/addons/sourcemod/scripting
-mv addons/sourcemod/scripting/compiled/hexspy.smx build/addons/sourcemod/plugins
-mv addons/sourcemod/configs/hexspy.ini build/addons/sourcemod/configs/hextags.ini
+mv addons/sourcemod/scripting/HexSpy.sp build/addons/sourcemod/scripting
+mv addons/sourcemod/scripting/compiled/HexSpy.smx build/addons/sourcemod/plugins
+mv addons/sourcemod/configs/hexspy.ini build/addons/sourcemod/configs/hexspy.ini
 
 
 echo "Compress the plugin"
 mv LICENSE build/
-cd build/ && zip -9rq hexspy.zip addons/ LICENSE && mv hexspy.zip ../
+cd build/ && zip -9rq HexSpy.zip addons/ LICENSE && mv HexSpy.zip ../
 
 echo "Build done"
