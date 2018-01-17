@@ -39,6 +39,7 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 public void OnPluginStart()
 {
 	RegAdminCmd("sm_hexspy", Cmd_Spy, ADMFLAG_GENERIC);
+	RegAdminCmd("sm_cmdspy", Cmd_Spy, ADMFLAG_GENERIC);
 	
 	CreateConVar("sm_hexspy_version", PLUGIN_VERSION, "HexSpy plugin version", FCVAR_SPONLY|FCVAR_REPLICATED|FCVAR_NOTIFY);
 	cv_bImmunity = CreateConVar("sm_hexspy_immunity", "1", "If true(1) who has an immunity lower can't see the cmd of one that has it higher", _, true, 0.0, true, 0.0);
