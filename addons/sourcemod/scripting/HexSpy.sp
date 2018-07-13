@@ -48,6 +48,7 @@ public void OnPluginStart()
 	
 	if (bLate) for(int i = 1; i <= MaxClients; i++)if (IsClientInGame(i)) OnClientCookiesCached(i); //Late load, clientprefs
 
+	GetFile();
 }
 
 public void OnClientCookiesCached(int client)
@@ -90,7 +91,7 @@ void GetFile()
 	CfgFile = OpenFile(sPath, "r");
 	
 	if (CfgFile == null)
-		SetFailState("Config file: %s couldn't be neither found or created", sPath);
+		SetFailState("Config file: %s couldn't be either found or created", sPath);
 }
 
 public Action OnClientCommand(int client, int args)
@@ -107,8 +108,6 @@ public Action OnClientCommand(int client, int args)
 	
 	if ((StrContains(sCommand, "sm_") == 0) && (GetCommandFlags(sCommand) != INVALID_FCVAR_FLAGS)) //Check if the command actually exixsts
 		bAllow = true;
-
-	GetFile();
 
 	char sLine[64];
 	while (CfgFile.ReadLine(sLine, sizeof(sLine))) //Parse the cfg file
