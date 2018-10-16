@@ -15,6 +15,7 @@ ConVar cv_bImmunity;
 ConVar cv_sPrefix;
 
 bool bSpy[MAXPLAYERS+1];
+bool bSpyConsole;
 bool bLate;
 
 char sChatPrefix[64];
@@ -77,6 +78,18 @@ public void OnClientCookiesCached(int client)
 
 public Action Cmd_Spy(int client, int args)
 {
+	if (client == 0)
+	{
+		bSpyConsole = !bSpyConsole;
+		
+		char sBuffer[256];
+		Format(sBuffer, sizeof(sBuffer), "%s %t", sChatPrefix, "HexSpy status", bSpy[client]? "Enabled" : "Disabled");
+		CRemoveColors(sBuffer, sizeof(sBuffer));
+		PrintToServer(sBuffer);
+		
+		return Plugin_Handled;
+	}
+	
 	if (!AreClientCookiesCached(client))
 	{
 		CReplyToCommand(client, "%s %t", sChatPrefix, "Data not fetched");
@@ -160,6 +173,14 @@ public Action OnClientCommand(int client, int args)
 	for (int i = 1; i <= MaxClients; i++)if (IsClientInGame(i) && bSpy[i] && client != i && CheckImmunity(client, i))
 	{
 		CPrintToChat(i, "%s %t", sChatPrefix, "Command spied", client, sCommand, sArgs);
+	}
+	
+	if (bSpyConsole)
+	{
+		char sBuffer[256];
+		Format(sBuffer, sizeof(sBuffer), "%s %t", sChatPrefix, "Command spied", client, sCommand, sArgs);
+		CRemoveColors(sBuffer, sizeof(sBuffer));
+		PrintToServer(sBuffer);
 	}
 	
 	return Plugin_Continue;	
