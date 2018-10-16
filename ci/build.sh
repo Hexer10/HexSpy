@@ -3,6 +3,8 @@ set -ev
 
 TAG=$1
 
+echo $2
+
 echo "Download und extract sourcemod"
 wget "http://www.sourcemod.net/latest.php?version="$2"&os=linux" -O sourcemod.tar.gz
 tar -xzf sourcemod.tar.gz
