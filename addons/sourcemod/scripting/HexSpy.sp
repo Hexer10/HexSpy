@@ -9,15 +9,15 @@
 #define PLUGIN_NAME           "HexSpy"
 #define PLUGIN_VERSION        "<TAG>"
 
-#define sPrefix  "{bluegrey}[Hex SPY]{default}"
+Handle hSpyCookie; 
 
-
-Handle hSpyCookie;
- 
 ConVar cv_bImmunity;
+ConVar cv_sPrefix;
 
 bool bSpy[MAXPLAYERS+1];
 bool bLate;
+
+char sChatPrefix[64];
 
 File CfgFile;
 
@@ -27,7 +27,7 @@ public Plugin myinfo =
 	author = "Hexah",
 	description = "See other player commands!",
 	version = PLUGIN_VERSION,
-	url = "csitajb.it"
+	url = "github.com/Hexer10/HexSpy"
 };
 
 public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
@@ -42,13 +42,27 @@ public void OnPluginStart()
 	RegAdminCmd("sm_cmdspy", Cmd_Spy, ADMFLAG_GENERIC);
 	
 	CreateConVar("sm_hexspy_version", PLUGIN_VERSION, "HexSpy plugin version", FCVAR_SPONLY|FCVAR_REPLICATED|FCVAR_NOTIFY);
-	cv_bImmunity = CreateConVar("sm_hexspy_immunity", "1", "If true(1) who has an immunity lower can't see the cmd of one that has it higher", _, true, 0.0, true, 0.0);
+	cv_bImmunity = CreateConVar("sm_hexspy_immunity", "1", "If true(1) who has an immunity lower can't see the cmd of one that has it higher", _, true, 0.0, true, 1.0);
+	cv_sPrefix = CreateConVar("sm_hexspy_prefix", "{bluegrey}[Hex SPY]{default}", "Plugin global prefix");
 	
 	hSpyCookie = RegClientCookie("sm_hexspy_enabled", "If true client has enabled the hexspy", CookieAccess_Private); //Reg cookie
 	
+	cv_sPrefix.AddChangeHook(Hook_ConVarChange);
 	if (bLate) for(int i = 1; i <= MaxClients; i++)if (IsClientInGame(i)) OnClientCookiesCached(i); //Late load, clientprefs
 
 	GetFile();
+	
+	LoadTranslations("hexspy.phrases");
+}
+
+public void OnConfigsExecuted()
+{
+	cv_sPrefix.GetString(sChatPrefix, sizeof(sChatPrefix));
+}
+
+public void Hook_ConVarChange(ConVar convar, const char[] oldValue, const char[] newValue)
+{
+	strcopy(sChatPrefix, sizeof(sChatPrefix), newValue);
 }
 
 public void OnClientCookiesCached(int client)
@@ -62,7 +76,7 @@ public Action Cmd_Spy(int client, int args)
 {
 	if (!AreClientCookiesCached(client))
 	{
-		CReplyToCommand(client, "%s Your data hasn't been fetched yet", sPrefix);
+		CReplyToCommand(client, "%s %t", sChatPrefix, "Data not fetched");
 		return Plugin_Handled;
 	}
 	
@@ -72,7 +86,7 @@ public Action Cmd_Spy(int client, int args)
 	IntToString(bSpy[client], sValue, sizeof(sValue));
 	SetClientCookie(client, hSpyCookie, sValue);
 	
-	CReplyToCommand(client, "%s You have %s the command spy!", sPrefix, bSpy[client]? "enabled" : "disabled");
+	CReplyToCommand(client, "%s %t", sChatPrefix, "HexSpy status", bSpy[client]? "Enabled" : "Disabled");
 	return Plugin_Handled;
 }
 
@@ -91,7 +105,7 @@ void GetFile()
 	CfgFile = OpenFile(sPath, "r");
 	
 	if (CfgFile == null)
-		SetFailState("Config file: %s couldn't be either found or created", sPath);
+		SetFailState("[HexSpy] Config file: %s couldn't be either found or created", sPath);
 }
 
 public Action OnClientCommand(int client, int args)
@@ -142,7 +156,7 @@ public Action OnClientCommand(int client, int args)
 	
 	for (int i = 1; i <= MaxClients; i++)if (IsClientInGame(i) && bSpy[i] && client != i && CheckImmunity(client, i))
 	{
-		CPrintToChat(i, "%s {lime}%N: {blue}%s {darkblue}%s", sPrefix, client, sCommand, sArgs);
+		CPrintToChat(i, "%s %t", sChatPrefix, "Command spied", client, sCommand, sArgs);
 	}
 	
 	return Plugin_Continue;	
