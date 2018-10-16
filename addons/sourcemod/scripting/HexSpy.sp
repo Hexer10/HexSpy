@@ -67,6 +67,9 @@ public void Hook_ConVarChange(ConVar convar, const char[] oldValue, const char[]
 
 public void OnClientCookiesCached(int client)
 {
+	if (!CheckCommandAccess(client, "sm_cmdspy", ADMFLAG_GENERIC) && !CheckCommandAccess(client, "sm_hexspy", ADMFLAG_GENERIC))
+		return;
+		
 	char sValue[4];
 	GetClientCookie(client, hSpyCookie, sValue, sizeof(sValue));
 	bSpy[client] = view_as<bool>(StringToInt(sValue));
