@@ -5,7 +5,7 @@ TAG=$1
 VERSION=$2
 
 echo "Download und extract sourcemod"
-wget "http://www.sourcemod.net/latest.php?version=$VERSION&os=linux" -O sourcemod.tar.gz
+wget "http://www.sourcemod.net/latest.php?version="$VERSION"&os=linux" -O sourcemod.tar.gz
 tar -xzf sourcemod.tar.gz
 
 echo "Give compiler rights for compile"
