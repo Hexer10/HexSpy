@@ -19,7 +19,7 @@ matrix:
     
 script:
 - 'if [[ $TRAVIS_PULL_REQUEST != "false" ]]; then bash ci/test.sh $VERSION; fi'
-- 'if [[ $TRAVIS_PULL_REQUEST == "false" ]]; then bash ci/build.sh $VERSION $TRAVIS_TAG; fi'
+- 'if [[ $TRAVIS_PULL_REQUEST == "false" ]]; then bash ci/build.sh $VERSION 1.30; fi'
 
 notifications:
   email: false
