@@ -3,6 +3,7 @@ set -ev
 
 TAG=$1
 
+echo $1
 echo $2
 
 echo "Download und extract sourcemod"
