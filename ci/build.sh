@@ -42,3 +42,4 @@ mv LICENSE build/
 cd build/ && zip -9rq HexSpy.zip addons/ LICENSE && mv HexSpy.zip ../
 
 echo "Build done"
+#
