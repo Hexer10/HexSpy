@@ -29,12 +29,13 @@ echo "Create clean plugins folder"
 mkdir -p build/addons/sourcemod/scripting
 mkdir build/addons/sourcemod/configs
 mkdir build/addons/sourcemod/plugins
+mkdir build/addons/sourcemod/translations
 
 echo "Move plugins files to their folder"
 mv addons/sourcemod/scripting/hexspy.sp build/addons/sourcemod/scripting
 mv addons/sourcemod/scripting/compiled/hexspy.smx build/addons/sourcemod/plugins
 mv addons/sourcemod/configs/hexspy.ini build/addons/sourcemod/configs/hexspy.ini
-
+mv addons/sourcemod/translations/hexspy.phrases.txt build/addons/sourcemod/translations/hexspy.phrases.txt
 
 echo "Compress the plugin"
 mv LICENSE build/
