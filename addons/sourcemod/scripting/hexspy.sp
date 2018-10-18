@@ -172,6 +172,11 @@ public Action OnClientCommand(int client, int args)
 	
 	for (int i = 1; i <= MaxClients; i++)if (IsClientInGame(i) && bSpy[i] && client != i && CheckImmunity(client, i))
 	{
+		if (!CheckCommandAccess(client, "sm_cmdspy", ADMFLAG_GENERIC) && !CheckCommandAccess(client, "sm_hexspy", ADMFLAG_GENERIC))
+		{
+			bSpy[i] = false;
+			continue;
+		}
 		CPrintToChat(i, "%s %t", sChatPrefix, "Command spied", client, sCommand, sArgs);
 	}
 	
