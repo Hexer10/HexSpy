@@ -17,13 +17,13 @@
 	
 	"HexSpy status"
 	{
-		"#format" "{1:s}"
+		"#format" "{1:t}"
 		"en" "You have {1} the command spy!"
 	}
 	
     	"Command spied"
     	{
-		"#format" "{1:N}, {2:s}, {3:s}"
+		"#format" "{1:N},{2:s},{3:s}"
 		"en" "{lime}{1}: {blue}{2} {darkblue} {3}"
     	}
 }
